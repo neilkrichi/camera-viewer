@@ -40,6 +40,31 @@ document.addEventListener('readystatechange', (event) => {
 		  }
 		}
 
+		var timeout;
+		var lastTap = 0;
+
+		video.addEventListener('touchend', function(event) {
+			var currentTime = new Date().getTime();
+			var tapLength = currentTime - lastTap;
+			clearTimeout(timeout);
+			if (tapLength < 500 && tapLength > 0) {
+				console.log('Double Tap!');
+				event.preventDefault();
+			} else {
+				timeout = setTimeout(function() {
+					if(location.href.includes('&debug')) {
+						console.log('Time out!');
+						console.log('cameras:', cameras);
+						console.log(camId);
+						console.log(currentStream);
+					}
+					clearTimeout(timeout);
+				}, 500);
+			}
+			lastTap = currentTime;
+		});
+		
+
 		video.addEventListener('dblclick',event => {
 			if(location.href.includes('&debug')) {
 				console.log('clicked on video');
